@@ -3,19 +3,23 @@ import java.util.ArrayList;
 
 public class CowORTking 
 {
-	private ArrayList<Usuarios> listaUsuarios;
+	private ArrayList<Usuario> listaUsuarios;
 	private ArrayList<Sede> listaSedes;
 	
 	
-	public Ticket reservarServicio(String dni, Sede sede, Servicios servicio) 
+	//Reservarmos un servicio para un usuario, primero comprobaremos que el usuario no tenga ese servicio a la brevedad
+	//luego que el nombre de la sede que nos indicó exista en la empresa CowORTking y finalmente lo mismo con el servicio
+	//pero no desarrollaremos lógica, usaremos otro metodo heredado de su clase.
+	public Ticket reservarServicio(String dni, Sede nombreSede, Servicio nombreServicio) 
 	{
-		Usuarios usuario = null; //Variable donde almanecaremos al usuario, de no encontrarlo quedará en null y se devolverá eso.
+		Usuario usuario = null; //Variable donde almanecaremos al usuario, de no encontrarlo quedará en null y se devolverá eso.
 		//Variables que necesitaremos para instanciar al ticket que debemos devolver.
 		Sede sede = null;
-		Servicios servicio = null;
+		Servicio servicio = null;
 		
-		//ForeacH que itera por todos los usuarios de la lista con el fin de buscarlo.
-		for(Usuarios usuarioIterado : this.listaUsuarios) 
+		
+		//Foreach que itera por todos los usuarios de la lista con el fin de buscarlo.
+		for(Usuario usuarioIterado : this.listaUsuarios) 
 		{
 			//Validamos con un if si el dni del usuario que estamos iterando equivale al dni recibido por parametro, en este caso encontramos al usuario.
 			if(usuarioIterado.getDni().equals(dni)) 
@@ -33,9 +37,10 @@ public class CowORTking
 			return null;
 		}
 		
+		//Lo mismo con la sede
 		for(Sede sedeIterada: this.listaSedes) 
 		{
-			if(sedeIterada.getNombre().equals(sede)) 
+			if(sedeIterada.getNombre().equals(nombreSede)) 
 			{
 				sede = sedeIterada;
 				break; //Salimos del foreach de las sedes ya que ya la obtuvimos.
@@ -49,7 +54,7 @@ public class CowORTking
 			return null;
 		}
 		
-		servicio = sede.obtenerServicioDisponible(servicio); //Obtenemos el atributo nombre de Servicios o null y se acaba el metodo.
+		servicio = sede.obtenerServicioDisponible(nombreServicio); //Obtenemos el atributo nombre de Servicios o null y se acaba el metodo.
 		
 		if(servicio == null) 
 		{
@@ -73,7 +78,43 @@ public class CowORTking
 			System.out.println("El servicio ya está reservado por otro usuario.");
 			return null;
 		}
-		
-		
 	}
+	
+	
+	
+	//metodo necesario en la Línea 71 metodo principal reservarServicio()
+	public double calcularImporte(String dni, Servicio servicio) 
+	{
+		Usuario usuario = null;
+		double importe = servicio.getPrecioAdicional(); //Heredamos un metodo de la clase Servicios gracias a recibir un servicio por parámetro.
+		
+		//Bucle foreach, buscaremos al usuario en la lista, si no lo encontramos no contrató ningun servicio por lo que en el próximo if se cancelará el metodo.
+		for(Usuario usuarioIterado : this.listaUsuarios) 
+		{
+			if(usuarioIterado.getDni().equals(dni)) 
+			{
+				usuario = usuarioIterado;
+				break;
+			}
+		}
+		
+		//Cancelamos el metodo.
+		if(usuario == null) 
+		{
+			System.out.println("No se encontró el usuario");
+			return 0.0;
+		}
+		
+
+		//Si continua el código es porque la anterior sentencia if no sucedió, por lo tanto encontramos al usuario parametrizado en la lista.
+		
+		//Si el usuario no pagó  la cuota == if(false)
+		if(!usuario.getIsCuotaPagada()) 
+		{
+			importe = 15000;
+		}
+		
+		return importe;
+	}
+	
 }
