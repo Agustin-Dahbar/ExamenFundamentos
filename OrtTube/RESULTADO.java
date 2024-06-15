@@ -1,0 +1,6 @@
+package OrtTube;
+
+public enum RESULTADO 
+{
+	OK, NOMBRE_YA_CAMBIADO, USUARIO_TRANSMITIENDO;
+}
